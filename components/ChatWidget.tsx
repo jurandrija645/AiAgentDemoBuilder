@@ -1,0 +1,143 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import type { LeadData } from "@/lib/leads";
+import { hexToRgba, readableTextColor } from "@/lib/color";
+
+interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+const MOCKUP_REPLY =
+  "Thanks for the message! This is a preview of what your AI assistant will look like — the full agent isn't wired up yet.";
+
+export default function ChatWidget({ lead }: { lead: LeadData }) {
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      role: "assistant",
+      content: `Hi! I'm ${lead.businessName}'s AI assistant. What can I help you with?`,
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [status, setStatus] = useState<"idle" | "starting" | "sending">("idle");
+  const listRef = useRef<HTMLDivElement>(null);
+  const [primary = "#334155", accent = primary] = lead.branding.colors;
+
+  useEffect(() => {
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, status]);
+
+  async function handleSend() {
+    const text = input.trim();
+    if (!text || status !== "idle") return;
+
+    const nextMessages: ChatMessage[] = [...messages, { role: "user", content: text }];
+    setMessages(nextMessages);
+    setInput("");
+
+    if (lead.mode === "mockup") {
+      setStatus("starting");
+      await new Promise((resolve) => setTimeout(resolve, 1100));
+      setMessages((prev) => [...prev, { role: "assistant", content: MOCKUP_REPLY }]);
+      setStatus("idle");
+      return;
+    }
+
+    setStatus("sending");
+    try {
+      const res = await fetch(`/leads/${lead.slug}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: nextMessages }),
+      });
+      const data = await res.json();
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.reply ?? "Sorry, something went wrong." },
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Sorry, I couldn't reach the assistant just now." },
+      ]);
+    } finally {
+      setStatus("idle");
+    }
+  }
+
+  return (
+    <div
+      className="flex h-[420px] w-full flex-col overflow-hidden rounded-2xl border backdrop-blur-xl"
+      style={{ borderColor: hexToRgba("#ffffff", 0.12), background: hexToRgba("#0b0d14", 0.7) }}
+    >
+      <div
+        className="flex items-center gap-2 border-b px-4 py-3"
+        style={{ borderColor: hexToRgba("#ffffff", 0.08) }}
+      >
+        <span className="h-2 w-2 rounded-full" style={{ background: "#34d399" }} />
+        <span className="text-sm font-medium text-white/80">
+          Chat with {lead.businessName}
+        </span>
+      </div>
+
+      <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+        {messages.map((m, i) => (
+          <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+            <div
+              className="max-w-[85%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed"
+              style={
+                m.role === "user"
+                  ? {
+                      backgroundImage: `linear-gradient(135deg, ${primary}, ${accent})`,
+                      color: readableTextColor(primary),
+                    }
+                  : { background: hexToRgba("#ffffff", 0.06), color: "#e5e5ea" }
+              }
+            >
+              {m.content}
+            </div>
+          </div>
+        ))}
+        {status !== "idle" && (
+          <div className="flex justify-start">
+            <div
+              className="rounded-2xl px-3.5 py-2 text-sm text-white/50"
+              style={{ background: hexToRgba("#ffffff", 0.06) }}
+            >
+              {status === "starting" ? "Starting up…" : "Thinking…"}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <form
+        className="flex items-center gap-2 border-t p-3"
+        style={{ borderColor: hexToRgba("#ffffff", 0.08) }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          void handleSend();
+        }}
+      >
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask a question…"
+          className="flex-1 rounded-full border bg-transparent px-4 py-2 text-sm text-white placeholder-white/40 outline-none"
+          style={{ borderColor: hexToRgba("#ffffff", 0.15) }}
+        />
+        <button
+          type="submit"
+          disabled={status !== "idle" || !input.trim()}
+          className="rounded-full px-4 py-2 text-sm font-medium disabled:opacity-40"
+          style={{
+            backgroundImage: `linear-gradient(135deg, ${primary}, ${accent})`,
+            color: readableTextColor(primary),
+          }}
+        >
+          Send
+        </button>
+      </form>
+    </div>
+  );
+}

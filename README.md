@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lead Demo Generator
 
-## Getting Started
+A local-only tool for cold outreach: generate a branded AI-demo landing page for
+a lead's business in seconds (**Process A**), then turn it into a real,
+grounded chat + voice agent once they've booked a call (**Process B**).
 
-First, run the development server:
+Nothing here is deployed. It's `npm run dev` on your machine plus two scripts.
+
+## One-time setup
+
+```bash
+npm install
+npx playwright install chromium   # ~300MB, only needed once
+cp .env.local.example .env.local  # then fill in the keys below
+```
+
+`.env.local`:
+
+| Variable | Where to get it | Used by |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com) | Chat route (Process B) |
+| `VAPI_API_KEY` | Vapi dashboard → Private API Keys | `build-agent` script (Process B) |
+| `NEXT_PUBLIC_VAPI_PUBLIC_KEY` | Vapi dashboard → Public API Keys | Voice widget in the browser (Process B) |
+
+`VAPI_ANTHROPIC_MODEL` / `VAPI_VOICE_PROVIDER` / `VAPI_VOICE_ID` are optional
+overrides — see the comments in `.env.local.example`.
+
+Keep the dev server running in its own terminal for both scripts below:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deliverable 1 — the hero mockup (Process A)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+For a fresh lead, before you've talked to them. Scrapes their site, brands a
+landing page in their name/logo/colors with a chat + voice widget UI (visually
+present, not wired up), and screenshots it — ready to drop into a cold DM or
+email.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run generate-hero -- --url=https://example.com --name="Business Name"
+```
 
-## Learn More
+- `--url` — required, the lead's website
+- `--name` — optional; if omitted, the script infers it from the site (falls
+  back to asking you if it can't)
 
-To learn more about Next.js, take a look at the following resources:
+**Output**, in under 30 seconds:
+- `data/leads/<slug>.json` — the lead's branding data, `mode: "mockup"`
+- `screenshots/<slug>.png` — the screenshot to send
+- Page live at `http://localhost:3000/leads/<slug>` for the whole session
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+If scraping fails (site blocks bots, times out, etc.) it'll ask you for the
+business name / logo URL in the terminal instead of crashing.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deliverable 2 — the live agent (Process B)
 
-## Deploy on Vercel
+Run this once the lead books a meeting, right before the call. Crawls a few
+more pages of their site (home, about, services, contact — up to 5 total),
+builds a knowledge base, creates a real Claude-powered chat agent and a real
+Vapi voice assistant grounded in that content, and flips the same page over to
+`mode: "live"` — no new page, no redeploy, just re-run the script.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build-agent -- --slug=<slug-from-process-a>
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Output**, in a couple minutes:
+- `data/leads/<slug>.json` updated with `knowledgeBase`, `vapiAssistantId`,
+  `mode: "live"`
+- The chat widget on `http://localhost:3000/leads/<slug>` now calls Claude for
+  real, grounded in the crawled site content
+- The "Talk to it" button starts a real Vapi voice call using the same
+  knowledge base
+
+If the crawl comes back with barely any text, the script will warn you — some
+sites render their content with JavaScript, which the crawler can't execute.
+
+## Notes
+
+- Everything is flat JSON under `data/leads/` — no database. Both scripts are
+  idempotent per slug; re-running `build-agent` on a slug just refreshes its
+  knowledge base and creates a new Vapi assistant.
+- `data/leads/*.json` and `screenshots/*.png` are gitignored — they're
+  per-lead output, not source.
+- `HeroBanner`, `ChatWidget`, and `VapiWidget` are generic — they read
+  `lead.mode` at request time rather than being regenerated per lead, so
+  Process B never touches code, only the lead's JSON file.
