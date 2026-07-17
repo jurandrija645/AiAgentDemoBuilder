@@ -60,7 +60,17 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
     }
   }
 
-  const label = !isLive
+  const statusText = !isLive
+    ? "Wired up after your call is booked"
+    : errorMessage
+      ? errorMessage
+      : callState === "idle"
+        ? "Real-time voice, powered by Mindaptive"
+        : callState === "connecting"
+          ? "Connecting…"
+          : "Listening — speak whenever you're ready";
+
+  const buttonLabel = !isLive
     ? "Voice demo coming soon"
     : callState === "idle"
       ? "Talk to it"
@@ -70,49 +80,65 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
 
   return (
     <div
-      className="flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 backdrop-blur-xl"
+      className="flex h-[480px] w-full flex-col overflow-hidden rounded-2xl border backdrop-blur-xl"
       style={{ borderColor: hexToRgba("#ffffff", 0.12), background: hexToRgba("#0b0d14", 0.7) }}
     >
-      <div className="flex items-center gap-3">
+      <div
+        className="flex items-center gap-2 border-b px-4 py-3"
+        style={{ borderColor: hexToRgba("#ffffff", 0.08) }}
+      >
         <span
-          className="flex h-9 w-9 items-center justify-center rounded-full"
-          style={{
-            backgroundImage: isLive
-              ? `linear-gradient(135deg, ${primary}, ${accent})`
-              : `linear-gradient(135deg, ${hexToRgba("#ffffff", 0.15)}, ${hexToRgba("#ffffff", 0.08)})`,
-            color: isLive ? readableTextColor(primary) : "#ffffff80",
-          }}
-        >
-          <MicIcon active={callState === "active"} />
+          className="h-2 w-2 rounded-full"
+          style={{ background: isLive ? "#34d399" : "#71717a" }}
+        />
+        <span className="text-sm font-medium text-white/80">
+          Talk to {lead.businessName}
         </span>
-        <div>
-          <p className="text-sm font-medium text-white/85">Voice assistant</p>
-          {errorMessage ? (
-            <p className="text-xs text-red-400">{errorMessage}</p>
-          ) : (
-            <p className="text-xs text-white/50">
-              {isLive ? "Real-time voice, powered by Vapi" : "Wired up after your call is booked"}
-            </p>
-          )}
-        </div>
       </div>
 
-      <button
-        type="button"
-        onClick={handleClick}
-        disabled={!isLive || callState === "connecting"}
-        className="rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-40"
-        style={
-          isLive
-            ? {
-                backgroundImage: `linear-gradient(135deg, ${primary}, ${accent})`,
-                color: readableTextColor(primary),
-              }
-            : { background: hexToRgba("#ffffff", 0.1), color: "#ffffffb0" }
-        }
-      >
-        {label}
-      </button>
+      <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6">
+        <div className="relative flex h-32 w-32 items-center justify-center">
+          {callState === "active" && (
+            <span
+              className="absolute inset-0 animate-ping rounded-full opacity-40"
+              style={{ backgroundImage: `linear-gradient(135deg, ${primary}, ${accent})` }}
+            />
+          )}
+          <span
+            className="relative flex h-28 w-28 items-center justify-center rounded-full"
+            style={{
+              backgroundImage: isLive
+                ? `linear-gradient(135deg, ${primary}, ${accent})`
+                : `linear-gradient(135deg, ${hexToRgba("#ffffff", 0.15)}, ${hexToRgba("#ffffff", 0.08)})`,
+              color: isLive ? readableTextColor(primary) : "#ffffff80",
+              boxShadow: isLive ? `0 0 40px ${hexToRgba(primary, 0.35)}` : undefined,
+            }}
+          >
+            <MicIcon active={callState === "active"} />
+          </span>
+        </div>
+
+        <p className="max-w-xs text-center text-sm text-white/60">{statusText}</p>
+      </div>
+
+      <div className="p-4">
+        <button
+          type="button"
+          onClick={handleClick}
+          disabled={!isLive || callState === "connecting"}
+          className="w-full rounded-full px-4 py-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40"
+          style={
+            isLive
+              ? {
+                  backgroundImage: `linear-gradient(135deg, ${primary}, ${accent})`,
+                  color: readableTextColor(primary),
+                }
+              : { background: hexToRgba("#ffffff", 0.1), color: "#ffffffb0" }
+          }
+        >
+          {buttonLabel}
+        </button>
+      </div>
     </div>
   );
 }
@@ -124,10 +150,10 @@ function MicIcon({ active }: { active: boolean }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={2}
+      strokeWidth={1.75}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={`h-4 w-4 ${active ? "animate-pulse" : ""}`}
+      className={`h-10 w-10 ${active ? "animate-pulse" : ""}`}
     >
       <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
       <path d="M19 10v2a7 7 0 0 1-14 0v-2" />

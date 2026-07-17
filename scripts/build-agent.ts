@@ -6,6 +6,7 @@ import { parseArgs } from "node:util";
 
 import { readLead, writeLead } from "../lib/leads";
 import { buildKnowledgeBase } from "../lib/knowledge-base";
+import { buildVoiceSystemPrompt } from "../lib/systemPrompt";
 
 // Vapi's accepted Claude model string can change as they add new models.
 // Override via VAPI_ANTHROPIC_MODEL in .env.local if this default is rejected
@@ -13,6 +14,7 @@ import { buildKnowledgeBase } from "../lib/knowledge-base";
 const VAPI_ANTHROPIC_MODEL = process.env.VAPI_ANTHROPIC_MODEL ?? "claude-haiku-4-5-20251001";
 const VAPI_VOICE_PROVIDER = process.env.VAPI_VOICE_PROVIDER ?? "11labs";
 const VAPI_VOICE_ID = process.env.VAPI_VOICE_ID ?? "paula";
+const VAPI_TRANSCRIBER_LANGUAGE = process.env.VAPI_TRANSCRIBER_LANGUAGE ?? "en";
 
 async function main() {
   const { values } = parseArgs({
@@ -50,7 +52,7 @@ async function main() {
     );
   }
 
-  const systemPrompt = `You are the AI assistant for ${lead.businessName}. Answer questions using only the following information about the business: ${knowledgeBase}. Keep answers short and helpful.`;
+  const systemPrompt = buildVoiceSystemPrompt(lead.businessName, knowledgeBase);
 
   console.log("Creating Vapi assistant...");
   const vapiAssistantId = await createVapiAssistant({
@@ -87,7 +89,7 @@ async function createVapiAssistant(opts: {
     },
     body: JSON.stringify({
       name: opts.businessName,
-      firstMessage: `Hi, this is ${opts.businessName}'s assistant. How can I help?`,
+      firstMessage: `Hey, thanks for calling ${opts.businessName}! What can I help you with?`,
       model: {
         provider: "anthropic",
         model: VAPI_ANTHROPIC_MODEL,
@@ -96,6 +98,10 @@ async function createVapiAssistant(opts: {
       voice: {
         provider: VAPI_VOICE_PROVIDER,
         voiceId: VAPI_VOICE_ID,
+      },
+      transcriber: {
+        provider: "deepgram",
+        language: VAPI_TRANSCRIBER_LANGUAGE,
       },
     }),
   });

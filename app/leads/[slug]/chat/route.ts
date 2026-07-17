@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { readLead } from "@/lib/leads";
+import { buildChatSystemPrompt } from "@/lib/systemPrompt";
 
 const anthropic = new Anthropic();
 
@@ -38,7 +39,7 @@ export async function POST(
     return NextResponse.json({ reply: `Ask me anything about ${lead.businessName}!` });
   }
 
-  const systemPrompt = `You are the AI assistant for ${lead.businessName}. Answer questions using only the following information about the business: ${lead.knowledgeBase}. Keep answers short and helpful.`;
+  const systemPrompt = buildChatSystemPrompt(lead.businessName, lead.knowledgeBase);
 
   try {
     const response = await anthropic.messages.create({

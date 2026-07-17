@@ -16,7 +16,7 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
-      content: `Hi! I'm ${lead.businessName}'s AI assistant. What can I help you with?`,
+      content: `Hey! Thanks for stopping by ${lead.businessName} — what can I help you with?`,
     },
   ]);
   const [input, setInput] = useState("");
@@ -68,7 +68,7 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
 
   return (
     <div
-      className="flex h-[420px] w-full flex-col overflow-hidden rounded-2xl border backdrop-blur-xl"
+      className="flex h-[480px] w-full flex-col overflow-hidden rounded-2xl border backdrop-blur-xl"
       style={{ borderColor: hexToRgba("#ffffff", 0.12), background: hexToRgba("#0b0d14", 0.7) }}
     >
       <div

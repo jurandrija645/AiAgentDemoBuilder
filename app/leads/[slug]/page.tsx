@@ -34,9 +34,9 @@ export default async function LeadPage({
         <HeroBanner lead={lead} />
 
         <section className="mx-auto max-w-6xl px-6 pb-16 sm:px-10 lg:px-16">
-          <div className="grid gap-4 sm:ml-auto sm:max-w-md">
-            <ChatWidget lead={lead} />
+          <div className="grid gap-5 sm:grid-cols-2">
             <VapiWidget lead={lead} />
+            <ChatWidget lead={lead} />
           </div>
         </section>
 
