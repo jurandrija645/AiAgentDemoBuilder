@@ -41,8 +41,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# generated lead data and screenshots (per-lead output, not source)
-/data/leads/*.json
-!/data/leads/.gitkeep
-/screenshots/*.png
-!/screenshots/.gitkeep
+# per-lead output, not source — one folder per lead under leads/
+/leads/*
+!/leads/.gitkeep

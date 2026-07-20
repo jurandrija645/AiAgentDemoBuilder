@@ -48,7 +48,7 @@ async function main() {
     console.warn(
       "That's very little content — the site may render its content with JavaScript, " +
         "which this crawler can't execute. The agent's answers may be weak. " +
-        "Consider passing a more crawlable page, or editing knowledgeBase by hand in the lead's JSON file.",
+        `Consider passing a more crawlable page, or editing leads/${slug}/knowledge-base.md by hand.`,
     );
   }
 

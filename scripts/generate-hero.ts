@@ -8,8 +8,9 @@ import { scrapeSite, ScrapeBlockedError } from "../lib/scrape";
 import { extractPalette } from "../lib/palette";
 import { screenshotPage, isServerRunning } from "../lib/screenshot";
 import { slugify } from "../lib/slugify";
-import { writeLead, type LeadData } from "../lib/leads";
+import { writeLead, screenshotPath, type LeadData } from "../lib/leads";
 import { ask } from "../lib/prompt";
+import { DEFAULT_LOCALE, isLocale } from "../lib/i18n";
 
 const DEV_SERVER = "http://localhost:3000";
 
@@ -18,11 +19,20 @@ async function main() {
     options: {
       url: { type: "string" },
       name: { type: "string" },
+      locale: { type: "string" },
     },
   });
 
   if (!values.url) {
-    console.error("Usage: npm run generate-hero -- --url=https://example.com [--name=\"Business Name\"]");
+    console.error(
+      "Usage: npm run generate-hero -- --url=https://example.com [--name=\"Business Name\"] [--locale=en|de]",
+    );
+    process.exit(1);
+  }
+
+  const locale = values.locale ?? DEFAULT_LOCALE;
+  if (!isLocale(locale)) {
+    console.error(`Unsupported locale "${locale}". Supported: en, de`);
     process.exit(1);
   }
 
@@ -68,6 +78,7 @@ async function main() {
     businessName,
     sourceUrl,
     mode: "mockup",
+    locale,
     branding: {
       logoUrl,
       logoIsFallback: palette.logoIsFallback,
@@ -79,7 +90,7 @@ async function main() {
   };
 
   await writeLead(lead);
-  console.log(`Saved data/leads/${slug}.json`);
+  console.log(`Saved leads/${slug}/lead.json`);
 
   const leadUrl = `${DEV_SERVER}/leads/${slug}`;
   console.log("Checking that the dev server is running...");
@@ -92,12 +103,12 @@ async function main() {
 
   console.log(`Rendering ${leadUrl}...`);
   console.log("Screenshotting...");
-  const screenshotPath = path.join(process.cwd(), "screenshots", `${slug}.png`);
-  await screenshotPage(leadUrl, screenshotPath);
+  const outPath = screenshotPath(slug, "hero");
+  await screenshotPage(leadUrl, outPath);
 
   console.log("");
   console.log(`Done: slug=${slug}`);
-  console.log(`Screenshot: ${screenshotPath}`);
+  console.log(`Screenshot: ${outPath}`);
 }
 
 main().catch((err) => {

@@ -3,21 +3,17 @@
 import { useState, useRef, useEffect } from "react";
 import type { LeadData } from "@/lib/leads";
 import { hexToRgba, readableTextColor } from "@/lib/color";
+import { t } from "@/lib/i18n";
 
 interface ChatMessage {
   role: "user" | "assistant";
   content: string;
 }
 
-const MOCKUP_REPLY =
-  "Thanks for the message! This is a preview of what your AI assistant will look like — the full agent isn't wired up yet.";
-
 export default function ChatWidget({ lead }: { lead: LeadData }) {
+  const s = t(lead.locale);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      role: "assistant",
-      content: `Hey! Thanks for stopping by ${lead.businessName} — what can I help you with?`,
-    },
+    { role: "assistant", content: s.chatGreeting(lead.businessName) },
   ]);
   const [input, setInput] = useState("");
   const [status, setStatus] = useState<"idle" | "starting" | "sending">("idle");
@@ -39,7 +35,7 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
     if (lead.mode === "mockup") {
       setStatus("starting");
       await new Promise((resolve) => setTimeout(resolve, 1100));
-      setMessages((prev) => [...prev, { role: "assistant", content: MOCKUP_REPLY }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: s.chatMockupReply }]);
       setStatus("idle");
       return;
     }
@@ -54,13 +50,10 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
       const data = await res.json();
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.reply ?? "Sorry, something went wrong." },
+        { role: "assistant", content: data.reply ?? s.chatError },
       ]);
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Sorry, I couldn't reach the assistant just now." },
-      ]);
+      setMessages((prev) => [...prev, { role: "assistant", content: s.chatUnreachable }]);
     } finally {
       setStatus("idle");
     }
@@ -77,7 +70,7 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
       >
         <span className="h-2 w-2 rounded-full" style={{ background: "#34d399" }} />
         <span className="text-sm font-medium text-white/80">
-          Chat with {lead.businessName}
+          {s.chatTitle(lead.businessName)}
         </span>
       </div>
 
@@ -105,7 +98,7 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
               className="rounded-2xl px-3.5 py-2 text-sm text-white/50"
               style={{ background: hexToRgba("#ffffff", 0.06) }}
             >
-              {status === "starting" ? "Starting up…" : "Thinking…"}
+              {status === "starting" ? s.chatStarting : s.chatThinking}
             </div>
           </div>
         )}
@@ -122,7 +115,7 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask a question…"
+          placeholder={s.chatPlaceholder}
           className="flex-1 rounded-full border bg-transparent px-4 py-2 text-sm text-white placeholder-white/40 outline-none"
           style={{ borderColor: hexToRgba("#ffffff", 0.15) }}
         />
@@ -135,7 +128,7 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
             color: readableTextColor(primary),
           }}
         >
-          Send
+          {s.chatSend}
         </button>
       </form>
     </div>

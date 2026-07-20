@@ -1,9 +1,12 @@
 import type { LeadData } from "@/lib/leads";
 import { hexToRgba, readableTextColor } from "@/lib/color";
+import { t } from "@/lib/i18n";
 
 export default function HeroBanner({ lead }: { lead: LeadData }) {
   const [primary = "#334155", secondary = primary, accent = secondary] = lead.branding.colors;
   const initial = lead.businessName.trim().charAt(0).toUpperCase() || "?";
+  const s = t(lead.locale);
+  const headline = s.headline(lead.businessName);
 
   return (
     <section className="relative px-6 pt-10 pb-16 sm:px-10 lg:px-16" style={{ color: "#f5f5f7" }}>
@@ -16,7 +19,7 @@ export default function HeroBanner({ lead }: { lead: LeadData }) {
           className="rounded-full border px-3 py-1 text-xs font-medium tracking-wide uppercase"
           style={{ borderColor: hexToRgba("#ffffff", 0.15), color: hexToRgba("#ffffff", 0.6) }}
         >
-          AI Concierge
+          {s.badge}
         </span>
       </nav>
 
@@ -30,21 +33,20 @@ export default function HeroBanner({ lead }: { lead: LeadData }) {
               className="h-1.5 w-1.5 rounded-full"
               style={{ background: accent, boxShadow: `0 0 8px ${hexToRgba(accent, 0.9)}` }}
             />
-            Live on {new URL(safeUrl(lead.sourceUrl)).hostname}
+            {s.liveOn(new URL(safeUrl(lead.sourceUrl)).hostname)}
           </p>
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-            Talk to{" "}
+            {headline.before}
             <span
               className="bg-clip-text text-transparent"
               style={{ backgroundImage: `linear-gradient(90deg, ${primary}, ${accent})` }}
             >
               {lead.businessName}
             </span>
-            , instantly.
+            {headline.after}
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-            {lead.branding.metaDescription ??
-              "Ask about hours, services, pricing, or booking — day or night. No hold music, no phone tag."}
+            {lead.branding.metaDescription ?? s.heroFallback}
           </p>
         </div>
       </div>

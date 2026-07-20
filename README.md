@@ -46,10 +46,17 @@ npm run generate-hero -- --url=https://example.com --name="Business Name"
 - `--name` — optional; if omitted, the script infers it from the site (falls
   back to asking you if it can't)
 
+```bash
+npm run generate-hero -- --url=https://example.de --name="Business Name" --locale=de
+```
+
 **Output**, in under 30 seconds:
-- `data/leads/<slug>.json` — the lead's branding data, `mode: "mockup"`
-- `screenshots/<slug>.png` — the screenshot to send
+- `leads/<slug>/lead.json` — the lead's branding data, `mode: "mockup"`
+- `leads/<slug>/screenshots/hero.png` — the screenshot to send
 - Page live at `http://localhost:3000/leads/<slug>` for the whole session
+
+`--locale` sets the page's language (`en` default, `de` available). Copy lives
+in `lib/i18n.ts` — add a locale there to support another language.
 
 If scraping fails (site blocks bots, times out, etc.) it'll ask you for the
 business name / logo URL in the terminal instead of crashing.
@@ -67,8 +74,9 @@ npm run build-agent -- --slug=<slug-from-process-a>
 ```
 
 **Output**, in a couple minutes:
-- `data/leads/<slug>.json` updated with `knowledgeBase`, `vapiAssistantId`,
-  `mode: "live"`
+- `leads/<slug>/knowledge-base.md` — the crawled site content, hand-editable
+- `leads/<slug>/agent.json` — the Vapi assistant id
+- `leads/<slug>/lead.json` flipped to `mode: "live"`
 - The chat widget on `http://localhost:3000/leads/<slug>` now calls Claude for
   real, grounded in the crawled site content
 - The "Talk to it" button starts a real Vapi voice call using the same
@@ -79,11 +87,23 @@ sites render their content with JavaScript, which the crawler can't execute.
 
 ## Notes
 
-- Everything is flat JSON under `data/leads/` — no database. Both scripts are
-  idempotent per slug; re-running `build-agent` on a slug just refreshes its
-  knowledge base and creates a new Vapi assistant.
-- `data/leads/*.json` and `screenshots/*.png` are gitignored — they're
-  per-lead output, not source.
+- One folder per lead under `leads/`, no database:
+
+  ```
+  leads/sonnenpuls/
+    lead.json           branding + mode — what the page renders from
+    knowledge-base.md   Process B, plain text so you can edit it by hand
+    agent.json          Process B, the Vapi assistant id
+    screenshots/
+      hero.png          Process A
+      live.png          Process B
+  ```
+
+  `lib/leads.ts` owns those paths — `readLead` assembles the files into one
+  `LeadData`, `writeLead` splits it back out, so nothing else has to know the
+  layout. Both scripts are idempotent per slug; re-running `build-agent`
+  refreshes the knowledge base and creates a new Vapi assistant.
+- `leads/` is gitignored — it's per-lead output, not source.
 - `HeroBanner`, `ChatWidget`, and `VapiWidget` are generic — they read
   `lead.mode` at request time rather than being regenerated per lead, so
   Process B never touches code, only the lead's JSON file.

@@ -4,6 +4,7 @@ import HeroBanner from "@/components/HeroBanner";
 import ChatWidget from "@/components/ChatWidget";
 import VapiWidget from "@/components/VapiWidget";
 import { hexToRgba } from "@/lib/color";
+import { t } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,7 @@ export default async function LeadPage({
   }
 
   const [primary = "#334155", accent = primary] = lead.branding.colors;
+  const s = t(lead.locale);
 
   return (
     <main
@@ -45,8 +47,8 @@ export default async function LeadPage({
           style={{ borderColor: hexToRgba("#ffffff", 0.08) }}
         >
           <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
-            <span>{lead.businessName} — AI assistant, always on.</span>
-            <span>{lead.mode === "live" ? "Live agent" : "Preview build"}</span>
+            <span>{s.footerTagline(lead.businessName)}</span>
+            <span>{lead.mode === "live" ? s.footerLive : s.footerPreview}</span>
           </div>
         </footer>
       </div>

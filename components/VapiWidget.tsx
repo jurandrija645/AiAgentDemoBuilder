@@ -4,10 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import type Vapi from "@vapi-ai/web";
 import type { LeadData } from "@/lib/leads";
 import { hexToRgba, readableTextColor } from "@/lib/color";
+import { t } from "@/lib/i18n";
 
 type CallState = "idle" | "connecting" | "active";
 
 export default function VapiWidget({ lead }: { lead: LeadData }) {
+  const s = t(lead.locale);
   const [primary = "#334155", accent = primary] = lead.branding.colors;
   const [callState, setCallState] = useState<CallState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -32,7 +34,7 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
     }
 
     if (!publicKey) {
-      setErrorMessage("Missing NEXT_PUBLIC_VAPI_PUBLIC_KEY in .env.local");
+      setErrorMessage(s.voiceMissingKey);
       return;
     }
 
@@ -47,7 +49,7 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
         client.on("call-end", () => setCallState("idle"));
         client.on("error", (err) => {
           console.error("Vapi error", err);
-          setErrorMessage("The call ran into a problem. Try again.");
+          setErrorMessage(s.voiceCallProblem);
           setCallState("idle");
         });
         vapiRef.current = client;
@@ -55,28 +57,28 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
       await vapiRef.current.start(lead.vapiAssistantId);
     } catch (err) {
       console.error(err);
-      setErrorMessage("Couldn't start the call.");
+      setErrorMessage(s.voiceCallFailed);
       setCallState("idle");
     }
   }
 
   const statusText = !isLive
-    ? "Wired up after your call is booked"
+    ? s.voiceNotWired
     : errorMessage
       ? errorMessage
       : callState === "idle"
-        ? "Real-time voice, powered by Mindaptive"
+        ? s.voiceIdle
         : callState === "connecting"
-          ? "Connecting…"
-          : "Listening — speak whenever you're ready";
+          ? s.voiceConnecting
+          : s.voiceActive;
 
   const buttonLabel = !isLive
-    ? "Voice demo coming soon"
+    ? s.voiceButtonSoon
     : callState === "idle"
-      ? "Talk to it"
+      ? s.voiceButtonStart
       : callState === "connecting"
-        ? "Connecting…"
-        : "End call";
+        ? s.voiceConnecting
+        : s.voiceButtonEnd;
 
   return (
     <div
@@ -92,7 +94,7 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
           style={{ background: isLive ? "#34d399" : "#71717a" }}
         />
         <span className="text-sm font-medium text-white/80">
-          Talk to {lead.businessName}
+          {s.voiceTitle(lead.businessName)}
         </span>
       </div>
 
