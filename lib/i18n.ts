@@ -21,14 +21,12 @@ interface Strings {
   chatError: string;
   chatUnreachable: string;
   voiceTitle: (name: string) => string;
-  voiceNotWired: string;
   voiceIdle: string;
   voiceConnecting: string;
   voiceActive: string;
   voiceCallProblem: string;
   voiceCallFailed: string;
   voiceMissingKey: string;
-  voiceButtonSoon: string;
   voiceButtonStart: string;
   voiceButtonEnd: string;
   footerTagline: (name: string) => string;
@@ -54,19 +52,17 @@ const STRINGS: Record<Locale, Strings> = {
     chatError: "Sorry, something went wrong.",
     chatUnreachable: "Sorry, I couldn't reach the assistant just now.",
     voiceTitle: (name) => `Talk to ${name}`,
-    voiceNotWired: "Wired up after your call is booked",
     voiceIdle: "Real-time voice, powered by Mindaptive",
     voiceConnecting: "Connecting…",
     voiceActive: "Listening — speak whenever you're ready",
     voiceCallProblem: "The call ran into a problem. Try again.",
     voiceCallFailed: "Couldn't start the call.",
     voiceMissingKey: "Missing NEXT_PUBLIC_VAPI_PUBLIC_KEY in .env.local",
-    voiceButtonSoon: "Voice demo coming soon",
     voiceButtonStart: "Talk to it",
     voiceButtonEnd: "End call",
     footerTagline: (name) => `${name} — AI assistant, always on.`,
     footerLive: "Live agent",
-    footerPreview: "Preview build",
+    footerPreview: "Always on",
   },
   de: {
     badge: "KI-Concierge",
@@ -85,19 +81,17 @@ const STRINGS: Record<Locale, Strings> = {
     chatError: "Entschuldigung, da ist etwas schiefgelaufen.",
     chatUnreachable: "Entschuldigung, der Assistent ist gerade nicht erreichbar.",
     voiceTitle: (name) => `Sprechen mit ${name}`,
-    voiceNotWired: "Wird nach Ihrem Termin freigeschaltet",
     voiceIdle: "Echtzeit-Sprachassistent, powered by Mindaptive",
     voiceConnecting: "Verbindung wird aufgebaut…",
     voiceActive: "Ich höre zu — sprechen Sie einfach los",
     voiceCallProblem: "Beim Anruf ist ein Problem aufgetreten. Bitte erneut versuchen.",
     voiceCallFailed: "Der Anruf konnte nicht gestartet werden.",
     voiceMissingKey: "NEXT_PUBLIC_VAPI_PUBLIC_KEY fehlt in .env.local",
-    voiceButtonSoon: "Sprachdemo folgt in Kürze",
     voiceButtonStart: "Jetzt sprechen",
     voiceButtonEnd: "Anruf beenden",
     footerTagline: (name) => `${name} — KI-Assistent, rund um die Uhr.`,
     footerLive: "Live-Agent",
-    footerPreview: "Vorschau",
+    footerPreview: "Immer erreichbar",
   },
 };
 

@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import type { LeadData } from "@/lib/leads";
 import { hexToRgba, readableTextColor } from "@/lib/color";
 import { t } from "@/lib/i18n";
+import { panelStyle, panelHeaderStyle } from "@/lib/surface";
+import AgentAvatar from "./AgentAvatar";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -62,13 +64,10 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
   return (
     <div
       className="flex h-[480px] w-full flex-col overflow-hidden rounded-2xl border backdrop-blur-xl"
-      style={{ borderColor: hexToRgba("#ffffff", 0.12), background: hexToRgba("#0b0d14", 0.7) }}
+      style={panelStyle(primary)}
     >
-      <div
-        className="flex items-center gap-2 border-b px-4 py-3"
-        style={{ borderColor: hexToRgba("#ffffff", 0.08) }}
-      >
-        <span className="h-2 w-2 rounded-full" style={{ background: "#34d399" }} />
+      <div className="flex items-center gap-2.5 border-b px-4 py-3" style={panelHeaderStyle()}>
+        <AgentAvatar kind="chat" primary={primary} accent={accent} online />
         <span className="text-sm font-medium text-white/80">
           {s.chatTitle(lead.businessName)}
         </span>
@@ -76,7 +75,13 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
 
       <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
         {messages.map((m, i) => (
-          <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+          <div
+            key={i}
+            className={`flex items-end gap-2 ${m.role === "user" ? "justify-end" : "justify-start"}`}
+          >
+            {m.role === "assistant" && (
+              <AgentAvatar kind="chat" primary={primary} accent={accent} size="sm" />
+            )}
             <div
               className="max-w-[85%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed"
               style={
@@ -93,7 +98,8 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
           </div>
         ))}
         {status !== "idle" && (
-          <div className="flex justify-start">
+          <div className="flex items-end justify-start gap-2">
+            <AgentAvatar kind="chat" primary={primary} accent={accent} size="sm" pulse />
             <div
               className="rounded-2xl px-3.5 py-2 text-sm text-white/50"
               style={{ background: hexToRgba("#ffffff", 0.06) }}

@@ -11,10 +11,7 @@ export default function HeroBanner({ lead }: { lead: LeadData }) {
   return (
     <section className="relative px-6 pt-10 pb-16 sm:px-10 lg:px-16" style={{ color: "#f5f5f7" }}>
       <nav className="relative z-10 mx-auto flex max-w-6xl items-center justify-between">
-        <div className="flex items-center gap-3">
-          <LogoOrBadge lead={lead} primary={primary} accent={accent} initial={initial} />
-          <span className="text-lg font-semibold tracking-tight">{lead.businessName}</span>
-        </div>
+        <Brand lead={lead} primary={primary} accent={accent} initial={initial} />
         <span
           className="rounded-full border px-3 py-1 text-xs font-medium tracking-wide uppercase"
           style={{ borderColor: hexToRgba("#ffffff", 0.15), color: hexToRgba("#ffffff", 0.6) }}
@@ -54,7 +51,13 @@ export default function HeroBanner({ lead }: { lead: LeadData }) {
   );
 }
 
-function LogoOrBadge({
+/**
+ * A real logo already carries the company name, so it stands alone — sized up,
+ * and free to keep its own aspect ratio since most logos are wordmarks. The
+ * generated badge is just an initial, which means nothing on its own, so that
+ * case keeps the name beside it.
+ */
+function Brand({
   lead,
   primary,
   accent,
@@ -70,21 +73,24 @@ function LogoOrBadge({
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={lead.branding.logoUrl}
-        alt={`${lead.businessName} logo`}
-        className="h-9 w-9 rounded-lg object-contain"
+        alt={lead.businessName}
+        className="h-10 w-auto max-w-[220px] object-contain object-left"
       />
     );
   }
   return (
-    <span
-      className="flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold"
-      style={{
-        backgroundImage: `linear-gradient(135deg, ${primary}, ${accent})`,
-        color: readableTextColor(primary),
-      }}
-    >
-      {initial}
-    </span>
+    <div className="flex items-center gap-3">
+      <span
+        className="flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold"
+        style={{
+          backgroundImage: `linear-gradient(135deg, ${primary}, ${accent})`,
+          color: readableTextColor(primary),
+        }}
+      >
+        {initial}
+      </span>
+      <span className="text-lg font-semibold tracking-tight">{lead.businessName}</span>
+    </div>
   );
 }
 

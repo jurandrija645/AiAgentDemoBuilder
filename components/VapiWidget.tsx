@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import type Vapi from "@vapi-ai/web";
 import type { LeadData } from "@/lib/leads";
-import { hexToRgba, readableTextColor } from "@/lib/color";
+import { readableTextColor } from "@/lib/color";
 import { t } from "@/lib/i18n";
+import { panelStyle, panelHeaderStyle } from "@/lib/surface";
+import AgentAvatar from "./AgentAvatar";
 
 type CallState = "idle" | "connecting" | "active";
 
@@ -62,19 +64,19 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
     }
   }
 
-  const statusText = !isLive
-    ? s.voiceNotWired
-    : errorMessage
-      ? errorMessage
-      : callState === "idle"
-        ? s.voiceIdle
-        : callState === "connecting"
-          ? s.voiceConnecting
-          : s.voiceActive;
-
-  const buttonLabel = !isLive
-    ? s.voiceButtonSoon
+  // The mockup is a sales asset: it should read as a finished product, so it
+  // shows the same copy and styling as a live agent. Only the behaviour differs
+  // — the button is inert until Process B wires up a real assistant.
+  const statusText = errorMessage
+    ? errorMessage
     : callState === "idle"
+      ? s.voiceIdle
+      : callState === "connecting"
+        ? s.voiceConnecting
+        : s.voiceActive;
+
+  const buttonLabel =
+    callState === "idle"
       ? s.voiceButtonStart
       : callState === "connecting"
         ? s.voiceConnecting
@@ -83,16 +85,10 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
   return (
     <div
       className="flex h-[480px] w-full flex-col overflow-hidden rounded-2xl border backdrop-blur-xl"
-      style={{ borderColor: hexToRgba("#ffffff", 0.12), background: hexToRgba("#0b0d14", 0.7) }}
+      style={panelStyle(primary)}
     >
-      <div
-        className="flex items-center gap-2 border-b px-4 py-3"
-        style={{ borderColor: hexToRgba("#ffffff", 0.08) }}
-      >
-        <span
-          className="h-2 w-2 rounded-full"
-          style={{ background: isLive ? "#34d399" : "#71717a" }}
-        />
+      <div className="flex items-center gap-2.5 border-b px-4 py-3" style={panelHeaderStyle()}>
+        <AgentAvatar kind="voice" primary={primary} accent={accent} online />
         <span className="text-sm font-medium text-white/80">
           {s.voiceTitle(lead.businessName)}
         </span>
@@ -106,21 +102,17 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
               style={{ backgroundImage: `linear-gradient(135deg, ${primary}, ${accent})` }}
             />
           )}
-          <span
-            className="relative flex h-28 w-28 items-center justify-center rounded-full"
-            style={{
-              backgroundImage: isLive
-                ? `linear-gradient(135deg, ${primary}, ${accent})`
-                : `linear-gradient(135deg, ${hexToRgba("#ffffff", 0.15)}, ${hexToRgba("#ffffff", 0.08)})`,
-              color: isLive ? readableTextColor(primary) : "#ffffff80",
-              boxShadow: isLive ? `0 0 40px ${hexToRgba(primary, 0.35)}` : undefined,
-            }}
-          >
-            <MicIcon active={callState === "active"} />
-          </span>
+          <AgentAvatar
+            kind="voice"
+            primary={primary}
+            accent={accent}
+            size="lg"
+            online
+            pulse={callState === "active"}
+          />
         </div>
 
-        <p className="max-w-xs text-center text-sm text-white/60">{statusText}</p>
+        <p className="max-w-xs text-center text-sm text-white/70">{statusText}</p>
       </div>
 
       <div className="p-4">
@@ -128,15 +120,13 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
           type="button"
           onClick={handleClick}
           disabled={!isLive || callState === "connecting"}
-          className="w-full rounded-full px-4 py-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40"
-          style={
-            isLive
-              ? {
-                  backgroundImage: `linear-gradient(135deg, ${primary}, ${accent})`,
-                  color: readableTextColor(primary),
-                }
-              : { background: hexToRgba("#ffffff", 0.1), color: "#ffffffb0" }
-          }
+          className={`w-full rounded-full px-4 py-3 text-sm font-medium ${
+            callState === "connecting" ? "opacity-60" : ""
+          }`}
+          style={{
+            backgroundImage: `linear-gradient(135deg, ${primary}, ${accent})`,
+            color: readableTextColor(primary),
+          }}
         >
           {buttonLabel}
         </button>
@@ -145,22 +135,3 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
   );
 }
 
-function MicIcon({ active }: { active: boolean }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.75}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`h-10 w-10 ${active ? "animate-pulse" : ""}`}
-    >
-      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-      <line x1="12" y1="19" x2="12" y2="23" />
-      <line x1="8" y1="23" x2="16" y2="23" />
-    </svg>
-  );
-}
