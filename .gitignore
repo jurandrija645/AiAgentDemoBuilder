@@ -41,6 +41,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# per-lead output, not source — one folder per lead under leads/
-/leads/*
-!/leads/.gitkeep
+# leads/ is tracked — each lead's branding, knowledge base and screenshots are
+# work product worth keeping in history.

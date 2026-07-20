@@ -1,0 +1,18 @@
+{
+  "slug": "ap-rescue",
+  "businessName": "AP Rescue",
+  "sourceUrl": "https://aprescue.sk/",
+  "mode": "live",
+  "branding": {
+    "logoUrl": "https://aprescue.sk/wp-content/uploads/2023/09/Zdravotnicka-asistencia-AP-Rescue-.png",
+    "logoIsFallback": false,
+    "colors": [
+      "#c01217",
+      "#b80206",
+      "#be0f14"
+    ],
+    "metaDescription": "Máme dlhoročné skúsenosti v prednemocničnej zdravotnej starostlivosti. Zabezpečíme zdravotnú službu na akomkoľvek hromadnom podujatí."
+  },
+  "createdAt": "2026-07-17T12:57:44.497Z",
+  "updatedAt": "2026-07-17T13:47:51.959Z"
+}

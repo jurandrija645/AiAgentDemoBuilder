@@ -1,0 +1,19 @@
+{
+  "slug": "sonnenpuls",
+  "businessName": "Sonnenpuls",
+  "sourceUrl": "https://sonnenpuls.solar",
+  "mode": "mockup",
+  "locale": "de",
+  "branding": {
+    "logoUrl": "https://sonnenpuls.solar/wp-content/uploads/2024/04/cropped-SonnenpulsWebsiteLogo-1-192x192.png",
+    "logoIsFallback": false,
+    "colors": [
+      "#223265",
+      "#fddf63",
+      "#fff06b"
+    ],
+    "metaDescription": "Dein Partner für erneuerbare Energien: Wir bieten dir maßgeschneiderte Solarlösungen. 0% Anzahlung | Hausinternes Montageteam | In max. 4 Wochen installiert."
+  },
+  "createdAt": "2026-07-20T12:32:41.718Z",
+  "updatedAt": "2026-07-20T12:32:41.718Z"
+}

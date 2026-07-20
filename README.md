@@ -103,7 +103,8 @@ sites render their content with JavaScript, which the crawler can't execute.
   `LeadData`, `writeLead` splits it back out, so nothing else has to know the
   layout. Both scripts are idempotent per slug; re-running `build-agent`
   refreshes the knowledge base and creates a new Vapi assistant.
-- `leads/` is gitignored — it's per-lead output, not source.
+- `leads/` is committed — each lead's branding, knowledge base and screenshots
+  are work product, so they live in git history alongside the code.
 - `HeroBanner`, `ChatWidget`, and `VapiWidget` are generic — they read
   `lead.mode` at request time rather than being regenerated per lead, so
   Process B never touches code, only the lead's JSON file.
