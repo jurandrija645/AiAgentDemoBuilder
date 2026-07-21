@@ -9,6 +9,7 @@ import { extractPalette } from "../lib/palette";
 import { fetchLogoDataUri } from "../lib/logo";
 import { screenshotPage, isServerRunning } from "../lib/screenshot";
 import { slugify } from "../lib/slugify";
+import { normalizeBusinessName } from "../lib/business-name";
 import { writeLead, screenshotPath, type LeadData } from "../lib/leads";
 import { ask } from "../lib/prompt";
 import { DEFAULT_LOCALE, isLocale, localeFromLang, SUPPORTED_LOCALES, type Locale } from "../lib/i18n";
@@ -102,6 +103,12 @@ async function main() {
 
   if (!businessName) {
     businessName = await ask("Couldn't determine a business name — enter one");
+  }
+
+  const rawName = businessName;
+  businessName = normalizeBusinessName(businessName);
+  if (businessName !== rawName) {
+    console.log(`Business name: "${businessName}" (dropped legal suffix from "${rawName}")`);
   }
 
   const slug = slugify(businessName);

@@ -1,0 +1,21 @@
+{
+  "slug": "ayr-services",
+  "businessName": "AYR Services",
+  "sourceUrl": "https://ayrservicesinc.com/",
+  "mode": "mockup",
+  "locale": "en",
+  "theme": "light",
+  "branding": {
+    "logoUrl": "https://ayrservicesinc.com/favicon.ico",
+    "logoDataUri": null,
+    "logoIsFallback": true,
+    "colors": [
+      "#004eaa",
+      "#134e4a",
+      "#14b8a6"
+    ],
+    "metaDescription": "AYR Services Inc. is a full service heating and air conditioning company serving Cape Coral and the surrounding area. We service & repair all brands of air conditioners, furnaces, heatpumps, and ductless mini-splits. We are here for your air conditioner repair & furnace repair needs. Call us today!"
+  },
+  "createdAt": "2026-07-21T14:24:05.478Z",
+  "updatedAt": "2026-07-21T14:24:05.478Z"
+}
