@@ -46,17 +46,31 @@ npm run generate-hero -- --url=https://example.com --name="Business Name"
 - `--name` — optional; if omitted, the script infers it from the site (falls
   back to asking you if it can't)
 
-```bash
-npm run generate-hero -- --url=https://example.de --name="Business Name" --locale=de
-```
-
 **Output**, in under 30 seconds:
 - `leads/<slug>/lead.json` — the lead's branding data, `mode: "mockup"`
-- `leads/<slug>/screenshots/hero.png` — the screenshot to send
+- `leads/<slug>/screenshots/hero-light.png` and `hero-dark.png` — both themes,
+  so you can pick which one to send
 - Page live at `http://localhost:3000/leads/<slug>` for the whole session
 
-`--locale` sets the page's language (`en` default, `de` available). Copy lives
-in `lib/i18n.ts` — add a locale there to support another language.
+**Theme** is matched to the lead's own site — the scraper reads their
+background and the page renders light or dark to suit, so the mockup doesn't
+clash with their brand. Both screenshots are taken regardless; the live page
+serves the matched one. Override with `--theme=dark`, or preview the other with
+`?theme=dark` on the URL.
+
+**Colors** come from the lead's site CSS — `theme-color`, brand CSS variables,
+then frequency — falling back to the logo. Tooling defaults (WordPress,
+Google widgets) are filtered out so they can't outrank the real brand.
+
+The page goes out in **the lead's own language** — the script reads the site's
+`<html lang>` and localizes the mockup to match (so the lead sees we're
+multilingual). Supported: `en`, `de`, `es`, `nl` — an unrecognized language
+falls back to `en` with a warning. Copy lives in `lib/i18n.ts`; add a block
+there to support another language. Override the auto-detection with
+`--locale=es` when you need to.
+
+Note this is Process A only — the live agents (Process B) are built in English
+on purpose, so they're ready to use.
 
 If scraping fails (site blocks bots, times out, etc.) it'll ask you for the
 business name / logo URL in the terminal instead of crashing.

@@ -2,6 +2,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
 import type { Locale } from "./i18n";
+import type { Theme } from "./theme";
 
 /**
  * Everything for one lead lives in `leads/<slug>/`:
@@ -23,8 +24,12 @@ export interface LeadData {
   sourceUrl: string;
   mode: "mockup" | "live";
   locale?: Locale;
+  /** Matched to the lead's own site so the mockup doesn't clash with their brand. */
+  theme?: Theme;
   branding: {
     logoUrl: string | null;
+    /** The logo inlined as a data: URI, so the page renders it without hitting the lead's server. */
+    logoDataUri?: string | null;
     logoIsFallback: boolean;
     colors: string[];
     metaDescription: string | null;
@@ -60,8 +65,8 @@ export function agentFilePath(slug: string): string {
   return path.join(leadDir(slug), "agent.json");
 }
 
-/** `name` is the screenshot's role: "hero" (Process A) or "live" (Process B). */
-export function screenshotPath(slug: string, name: "hero" | "live"): string {
+/** `name` is the screenshot's role, e.g. "hero-light" (Process A) or "live" (Process B). */
+export function screenshotPath(slug: string, name: string): string {
   return path.join(leadDir(slug), "screenshots", `${name}.png`);
 }
 

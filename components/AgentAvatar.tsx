@@ -1,4 +1,5 @@
 import { hexToRgba, readableTextColor } from "@/lib/color";
+import { tokens, type Theme } from "@/lib/theme";
 
 const SIZES = {
   sm: { box: "h-7 w-7", glyph: "h-3.5 w-3.5", dot: "h-2 w-2" },
@@ -18,6 +19,7 @@ export default function AgentAvatar({
   size = "md",
   online = false,
   pulse = false,
+  theme,
 }: {
   kind: "chat" | "voice";
   primary: string;
@@ -25,8 +27,10 @@ export default function AgentAvatar({
   size?: keyof typeof SIZES;
   online?: boolean;
   pulse?: boolean;
+  theme?: Theme;
 }) {
   const s = SIZES[size];
+  const tk = tokens(theme);
 
   return (
     <span className="relative inline-flex shrink-0">
@@ -39,7 +43,7 @@ export default function AgentAvatar({
         }}
       >
         {kind === "chat" ? (
-          <ChatGlyph className={`${s.glyph} ${pulse ? "animate-pulse" : ""}`} />
+          <ChatGlyph className={`${s.glyph} ${pulse ? "animate-pulse" : ""}`} holeColor={primary} />
         ) : (
           <VoiceGlyph className={`${s.glyph} ${pulse ? "animate-pulse" : ""}`} />
         )}
@@ -47,7 +51,7 @@ export default function AgentAvatar({
       {online && (
         <span
           className={`absolute -right-0.5 -bottom-0.5 ${s.dot} rounded-full border-2`}
-          style={{ background: "#34d399", borderColor: "#12161f" }}
+          style={{ background: "#34d399", borderColor: tk.panelSolid }}
         />
       )}
     </span>
@@ -55,7 +59,7 @@ export default function AgentAvatar({
 }
 
 /** Speech bubble with typing dots — the chat agent. */
-function ChatGlyph({ className }: { className: string }) {
+function ChatGlyph({ className, holeColor }: { className: string; holeColor: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
       <path
@@ -63,7 +67,8 @@ function ChatGlyph({ className }: { className: string }) {
         fill="currentColor"
         opacity={0.95}
       />
-      <g fill={readableTextColorInverse()}>
+      {/* The dots read as holes in the bubble, so they take the circle's own color. */}
+      <g fill={holeColor}>
         <circle cx="8.5" cy="10" r="1.15" />
         <circle cx="12" cy="10" r="1.15" />
         <circle cx="15.5" cy="10" r="1.15" />
@@ -91,9 +96,4 @@ function VoiceGlyph({ className }: { className: string }) {
       <path d="M20 18.5v.5a2.5 2.5 0 0 1-2.5 2.5H13" />
     </svg>
   );
-}
-
-/** The dots sit on top of the filled bubble, so they punch through in the panel colour. */
-function readableTextColorInverse(): string {
-  return "#12161f";
 }

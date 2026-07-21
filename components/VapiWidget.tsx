@@ -6,13 +6,17 @@ import type { LeadData } from "@/lib/leads";
 import { readableTextColor } from "@/lib/color";
 import { t } from "@/lib/i18n";
 import { panelStyle, panelHeaderStyle } from "@/lib/surface";
+import { tokens, onTheme, type Theme } from "@/lib/theme";
 import AgentAvatar from "./AgentAvatar";
 
 type CallState = "idle" | "connecting" | "active";
 
-export default function VapiWidget({ lead }: { lead: LeadData }) {
+export default function VapiWidget({ lead, theme }: { lead: LeadData; theme?: Theme }) {
   const s = t(lead.locale);
-  const [primary = "#334155", accent = primary] = lead.branding.colors;
+  const tk = tokens(theme);
+  const [rawPrimary = "#334155", rawAccent = rawPrimary] = lead.branding.colors;
+  const primary = onTheme(rawPrimary, theme);
+  const accent = onTheme(rawAccent, theme);
   const [callState, setCallState] = useState<CallState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const vapiRef = useRef<Vapi | null>(null);
@@ -85,11 +89,11 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
   return (
     <div
       className="flex h-[480px] w-full flex-col overflow-hidden rounded-2xl border backdrop-blur-xl"
-      style={panelStyle(primary)}
+      style={panelStyle(primary, theme)}
     >
-      <div className="flex items-center gap-2.5 border-b px-4 py-3" style={panelHeaderStyle()}>
-        <AgentAvatar kind="voice" primary={primary} accent={accent} online />
-        <span className="text-sm font-medium text-white/80">
+      <div className="flex items-center gap-2.5 border-b px-4 py-3" style={panelHeaderStyle(theme)}>
+        <AgentAvatar kind="voice" primary={primary} accent={accent} online theme={theme} />
+        <span className="text-sm font-medium" style={{ color: tk.textPrimary }}>
           {s.voiceTitle(lead.businessName)}
         </span>
       </div>
@@ -109,10 +113,13 @@ export default function VapiWidget({ lead }: { lead: LeadData }) {
             size="lg"
             online
             pulse={callState === "active"}
+            theme={theme}
           />
         </div>
 
-        <p className="max-w-xs text-center text-sm text-white/70">{statusText}</p>
+        <p className="max-w-xs text-center text-sm" style={{ color: tk.textSecondary }}>
+          {statusText}
+        </p>
       </div>
 
       <div className="p-4">

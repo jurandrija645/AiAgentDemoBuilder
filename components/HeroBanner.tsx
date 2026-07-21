@@ -1,20 +1,28 @@
 import type { LeadData } from "@/lib/leads";
 import { hexToRgba, readableTextColor } from "@/lib/color";
 import { t } from "@/lib/i18n";
+import { tokens, onTheme, type Theme } from "@/lib/theme";
 
-export default function HeroBanner({ lead }: { lead: LeadData }) {
-  const [primary = "#334155", secondary = primary, accent = secondary] = lead.branding.colors;
+export default function HeroBanner({ lead, theme }: { lead: LeadData; theme?: Theme }) {
+  const tk = tokens(theme);
+  const [rawPrimary = "#334155", rawSecondary = rawPrimary, rawAccent = rawSecondary] =
+    lead.branding.colors;
+  const primary = onTheme(rawPrimary, theme);
+  const accent = onTheme(rawAccent, theme);
   const initial = lead.businessName.trim().charAt(0).toUpperCase() || "?";
   const s = t(lead.locale);
   const headline = s.headline(lead.businessName);
 
   return (
-    <section className="relative px-6 pt-10 pb-16 sm:px-10 lg:px-16" style={{ color: "#f5f5f7" }}>
+    <section
+      className="relative px-6 pt-10 pb-16 sm:px-10 lg:px-16"
+      style={{ color: tk.textPrimary }}
+    >
       <nav className="relative z-10 mx-auto flex max-w-6xl items-center justify-between">
         <Brand lead={lead} primary={primary} accent={accent} initial={initial} />
         <span
           className="rounded-full border px-3 py-1 text-xs font-medium tracking-wide uppercase"
-          style={{ borderColor: hexToRgba("#ffffff", 0.15), color: hexToRgba("#ffffff", 0.6) }}
+          style={{ borderColor: tk.panelBorder, color: tk.textSecondary }}
         >
           {s.badge}
         </span>
@@ -24,13 +32,13 @@ export default function HeroBanner({ lead }: { lead: LeadData }) {
         <div className="max-w-2xl">
           <p
             className="mb-4 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium"
-            style={{ borderColor: hexToRgba(primary, 0.5), color: hexToRgba(primary, 0.9) }}
+            style={{ borderColor: hexToRgba(primary, 0.5), color: primary }}
           >
             <span
               className="h-1.5 w-1.5 rounded-full"
               style={{ background: accent, boxShadow: `0 0 8px ${hexToRgba(accent, 0.9)}` }}
             />
-            {s.liveOn(new URL(safeUrl(lead.sourceUrl)).hostname)}
+            {s.liveOn(new URL(safeUrl(lead.sourceUrl)).hostname.replace(/^www\./, ""))}
           </p>
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
             {headline.before}
@@ -42,7 +50,10 @@ export default function HeroBanner({ lead }: { lead: LeadData }) {
             </span>
             {headline.after}
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
+          <p
+            className="mt-6 max-w-xl text-lg leading-relaxed"
+            style={{ color: tk.textSecondary }}
+          >
             {lead.branding.metaDescription ?? s.heroFallback}
           </p>
         </div>
@@ -68,11 +79,12 @@ function Brand({
   accent: string;
   initial: string;
 }) {
-  if (!lead.branding.logoIsFallback && lead.branding.logoUrl) {
+  const logoSrc = lead.branding.logoDataUri || lead.branding.logoUrl;
+  if (!lead.branding.logoIsFallback && logoSrc) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={lead.branding.logoUrl}
+        src={logoSrc}
         alt={lead.businessName}
         className="h-10 w-auto max-w-[220px] object-contain object-left"
       />

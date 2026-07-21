@@ -1,9 +1,22 @@
-export type Locale = "en" | "de";
+export type Locale = "en" | "de" | "es" | "nl" | "da";
 
 export const DEFAULT_LOCALE: Locale = "en";
 
+export const SUPPORTED_LOCALES: Locale[] = ["en", "de", "es", "nl", "da"];
+
 export function isLocale(value: string): value is Locale {
-  return value === "en" || value === "de";
+  return (SUPPORTED_LOCALES as string[]).includes(value);
+}
+
+/**
+ * Map a website's `lang` attribute (e.g. "es", "es-ES", "nl-NL") to a locale we
+ * render, or null if we don't have strings for it yet. Landing pages go out in
+ * the lead's own language; the base subtag is all we key on.
+ */
+export function localeFromLang(lang: string | null | undefined): Locale | null {
+  if (!lang) return null;
+  const base = lang.trim().toLowerCase().split(/[-_]/)[0];
+  return isLocale(base) ? base : null;
 }
 
 interface Strings {
@@ -92,6 +105,93 @@ const STRINGS: Record<Locale, Strings> = {
     footerTagline: (name) => `${name} — KI-Assistent, rund um die Uhr.`,
     footerLive: "Live-Agent",
     footerPreview: "Immer erreichbar",
+  },
+  es: {
+    badge: "Conserje IA",
+    liveOn: (host) => `En directo en ${host}`,
+    headline: () => ({ before: "Habla con ", after: ", al instante." }),
+    heroFallback:
+      "Pregunta por horarios, servicios, precios o citas — de día o de noche. Sin música de espera, sin llamadas perdidas.",
+    chatTitle: (name) => `Chat con ${name}`,
+    chatGreeting: (name) => `¡Hola! Gracias por visitar ${name} — ¿en qué puedo ayudarte?`,
+    chatPlaceholder: "Haz una pregunta…",
+    chatSend: "Enviar",
+    chatStarting: "Iniciando…",
+    chatThinking: "Pensando…",
+    chatMockupReply:
+      "¡Gracias por tu mensaje! Esto es una vista previa de tu asistente de IA — el agente completo aún no está conectado.",
+    chatError: "Lo siento, algo ha salido mal.",
+    chatUnreachable: "Lo siento, no he podido contactar con el asistente ahora mismo.",
+    voiceTitle: (name) => `Habla con ${name}`,
+    voiceIdle: "Voz en tiempo real, con la tecnología de Mindaptive",
+    voiceConnecting: "Conectando…",
+    voiceActive: "Te escucho — habla cuando quieras",
+    voiceCallProblem: "Ha habido un problema con la llamada. Inténtalo de nuevo.",
+    voiceCallFailed: "No se ha podido iniciar la llamada.",
+    voiceMissingKey: "Falta NEXT_PUBLIC_VAPI_PUBLIC_KEY en .env.local",
+    voiceButtonStart: "Habla con él",
+    voiceButtonEnd: "Colgar",
+    footerTagline: (name) => `${name} — asistente de IA, siempre disponible.`,
+    footerLive: "Agente en directo",
+    footerPreview: "Siempre disponible",
+  },
+  nl: {
+    badge: "AI-conciërge",
+    liveOn: (host) => `Live op ${host}`,
+    headline: () => ({ before: "Praat met ", after: ", direct." }),
+    heroFallback:
+      "Vraag naar openingstijden, diensten, prijzen of afspraken — dag en nacht. Geen wachtmuziek, geen telefoontag.",
+    chatTitle: (name) => `Chat met ${name}`,
+    chatGreeting: (name) => `Hoi! Fijn dat je bij ${name} langskomt — waarmee kan ik je helpen?`,
+    chatPlaceholder: "Stel een vraag…",
+    chatSend: "Versturen",
+    chatStarting: "Opstarten…",
+    chatThinking: "Aan het denken…",
+    chatMockupReply:
+      "Bedankt voor je bericht! Dit is een voorbeeld van je AI-assistent — de volledige agent is nog niet aangesloten.",
+    chatError: "Sorry, er ging iets mis.",
+    chatUnreachable: "Sorry, ik kon de assistent nu even niet bereiken.",
+    voiceTitle: (name) => `Praat met ${name}`,
+    voiceIdle: "Realtime spraak, mogelijk gemaakt door Mindaptive",
+    voiceConnecting: "Verbinden…",
+    voiceActive: "Ik luister — spreek wanneer je klaar bent",
+    voiceCallProblem: "Er ging iets mis met het gesprek. Probeer het opnieuw.",
+    voiceCallFailed: "Kon het gesprek niet starten.",
+    voiceMissingKey: "NEXT_PUBLIC_VAPI_PUBLIC_KEY ontbreekt in .env.local",
+    voiceButtonStart: "Praat met de assistent",
+    voiceButtonEnd: "Gesprek beëindigen",
+    footerTagline: (name) => `${name} — AI-assistent, altijd bereikbaar.`,
+    footerLive: "Live agent",
+    footerPreview: "Altijd bereikbaar",
+  },
+  da: {
+    badge: "AI-concierge",
+    liveOn: (host) => `Live på ${host}`,
+    headline: () => ({ before: "Tal med ", after: " — med det samme." }),
+    heroFallback:
+      "Spørg om åbningstider, ydelser, priser eller book en tid — dag og nat. Ingen ventemusik, ingen telefonjagt.",
+    chatTitle: (name) => `Chat med ${name}`,
+    chatGreeting: (name) => `Hej! Tak fordi du kigger forbi ${name} — hvad kan jeg hjælpe med?`,
+    chatPlaceholder: "Stil et spørgsmål…",
+    chatSend: "Send",
+    chatStarting: "Starter op…",
+    chatThinking: "Tænker…",
+    chatMockupReply:
+      "Tak for din besked! Dette er en forhåndsvisning af din AI-assistent — den fulde agent er ikke tilsluttet endnu.",
+    chatError: "Beklager, noget gik galt.",
+    chatUnreachable: "Beklager, jeg kunne ikke få fat i assistenten lige nu.",
+    voiceTitle: (name) => `Tal med ${name}`,
+    voiceIdle: "Stemme i realtid, drevet af Mindaptive",
+    voiceConnecting: "Forbinder…",
+    voiceActive: "Jeg lytter — sig endelig noget",
+    voiceCallProblem: "Der opstod et problem med opkaldet. Prøv igen.",
+    voiceCallFailed: "Opkaldet kunne ikke startes.",
+    voiceMissingKey: "NEXT_PUBLIC_VAPI_PUBLIC_KEY mangler i .env.local",
+    voiceButtonStart: "Tal med den",
+    voiceButtonEnd: "Afslut opkald",
+    footerTagline: (name) => `${name} — AI-assistent, altid tilgængelig.`,
+    footerLive: "Live-agent",
+    footerPreview: "Altid tilgængelig",
   },
 };
 

@@ -1,0 +1,19 @@
+{
+  "slug": "volters",
+  "businessName": "Volters",
+  "sourceUrl": "https://volters.nl",
+  "mode": "mockup",
+  "locale": "en",
+  "branding": {
+    "logoUrl": "https://volters.nl/apple-icon.png",
+    "logoIsFallback": false,
+    "colors": [
+      "#ffdb00",
+      "#fecd00",
+      "#fff000"
+    ],
+    "metaDescription": "Bespaar op uw energierekening met zonnepanelen, warmtepomp en thuisbatterij van Volters. Gratis advies en vakkundige installatie."
+  },
+  "createdAt": "2026-07-21T06:53:15.800Z",
+  "updatedAt": "2026-07-21T06:53:15.800Z"
+}

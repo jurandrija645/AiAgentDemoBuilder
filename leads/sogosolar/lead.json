@@ -1,19 +1,21 @@
 {
   "slug": "sogosolar",
-  "businessName": "SogoSolar",
+  "businessName": "Sogosolar",
   "sourceUrl": "https://sogosolar.co.uk",
   "mode": "mockup",
   "locale": "en",
+  "theme": "light",
   "branding": {
     "logoUrl": "https://sogosolar.co.uk/wp-content/uploads/2014/05/favicon.png",
+    "logoDataUri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABOElEQVR42u3ROUsDQRjG8bfZIArimRXRkEgaSWPWo7FSSJHCStR4QEg6wcbCQrCxUaKSTjYRryhuwAOtNF6k9gvYWIpfwEItlPU/MEow6ezE4sfswPM+uzMrgYl1CzbW0ARR2mMZ6UqsyONpjbwURJ7PK1PhIqLoQa0uMCjwhBMpeTqrVgV1hBtLBg14vgqyWEVQD/cj7xu3nVA8HXk4qg+9FmSbcB7dsPSzgyHRQxE4mNRrAKY5upk9tq3Zj2uJE05gHnsIwFRFargTVZjCIvbh76CgYXg3Z6cHfO6N3BHOoQUn8JcWTONAM9GrjtAWyzhWMhW9P2wOv13KBeFlzKBPff7PIxh6/d57R7Y8dnpQ3FtZIriAOdiVLrGMH61jG1LcCcr7lXj1m5NqsOw3uq77G/8Ff6PgE8OzTHkFZOC8AAAAAElFTkSuQmCC",
     "logoIsFallback": false,
     "colors": [
+      "#2ea3f2",
       "#215893",
-      "#f6b900",
-      "#eeb400"
+      "#f6b900"
     ],
     "metaDescription": "So Go Solar are London Solar Panel and PV photovoltaic systems installers in homes and businesses. Free quotes and expert fitting in London, Surrey & Essex"
   },
-  "createdAt": "2026-07-20T14:19:46.617Z",
-  "updatedAt": "2026-07-20T14:19:46.617Z"
+  "createdAt": "2026-07-21T09:16:31.481Z",
+  "updatedAt": "2026-07-21T09:16:31.481Z"
 }

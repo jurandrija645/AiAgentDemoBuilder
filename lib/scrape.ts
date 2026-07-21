@@ -1,5 +1,9 @@
 import * as cheerio from "cheerio";
 
+import { extractSiteColors } from "./palette";
+import { detectSiteTheme } from "./site-theme";
+import type { Theme } from "./theme";
+
 const USER_AGENT =
   "Mozilla/5.0 (compatible; LeadDemoGeneratorBot/1.0; +https://localhost)";
 
@@ -9,6 +13,12 @@ export interface ScrapedSite {
   businessName: string | null;
   logoUrl: string | null;
   metaDescription: string | null;
+  /** The site's declared language, e.g. "es-ES" or "nl" — used to localize the page. */
+  lang: string | null;
+  /** Brand colors read from the page's own CSS — a better signal than the logo alone. */
+  siteColors: string[];
+  /** Whether the lead's own site reads light or dark. */
+  theme: Theme;
 }
 
 export async function scrapeSite(url: string): Promise<ScrapedSite> {
@@ -20,14 +30,64 @@ export async function scrapeSite(url: string): Promise<ScrapedSite> {
     $("title").first().text().trim() ||
     null;
 
-  const metaDescription =
-    $('meta[property="og:description"]').attr("content")?.trim() ||
-    $('meta[name="description"]').attr("content")?.trim() ||
+  const lang =
+    $("html").attr("lang")?.trim() ||
+    $('meta[property="og:locale"]').attr("content")?.trim() ||
     null;
 
-  const logoUrl = resolveLogoUrl($, url);
+  const metaDescription =
+    cleanDescription($('meta[property="og:description"]').attr("content")) ??
+    cleanDescription($('meta[name="description"]').attr("content"));
 
-  return { businessName, logoUrl, metaDescription };
+  const logoUrl = resolveLogoUrl($, url);
+  const siteColors = extractSiteColors(html);
+  const theme = detectSiteTheme(html);
+
+  return { businessName, logoUrl, metaDescription, lang, siteColors, theme };
+}
+
+const NAMED_ENTITIES: Record<string, string> = {
+  nbsp: " ",
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+};
+
+/** Runs twice: some CMSs store already-escaped text, so `&amp;nbsp;` is common. */
+function decodeEntities(text: string): string {
+  let out = text;
+  for (let pass = 0; pass < 2; pass++) {
+    out = out.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (match, code: string) => {
+      if (code.startsWith("#")) {
+        const num =
+          code[1]?.toLowerCase() === "x"
+            ? parseInt(code.slice(2), 16)
+            : parseInt(code.slice(1), 10);
+        return Number.isFinite(num) ? String.fromCodePoint(num) : match;
+      }
+      return NAMED_ENTITIES[code.toLowerCase()] ?? match;
+    });
+  }
+  return out;
+}
+
+/**
+ * The hero shows this as the lead's own pitch, so it has to be a real sentence.
+ * Some sites ship a description that is just spacer entities with the company
+ * name buried in it — worse than showing nothing, since the page then has our
+ * copy rendered as literal `&nbsp;`. Returning null lets the hero use its
+ * localized fallback line instead.
+ */
+function cleanDescription(raw: string | undefined): string | null {
+  if (!raw) return null;
+
+  const text = decodeEntities(raw).replace(/\s+/gu, " ").trim();
+  const words = text.split(" ").filter((w) => /\p{L}{2,}/u.test(w));
+  if (text.length < 40 || words.length < 6) return null;
+
+  return text;
 }
 
 async function fetchHtml(url: string): Promise<string> {

@@ -1,0 +1,21 @@
+{
+  "slug": "firmasundhed",
+  "businessName": "Firmasundhed",
+  "sourceUrl": "https://firmasundhed.nu/",
+  "mode": "mockup",
+  "locale": "da",
+  "theme": "light",
+  "branding": {
+    "logoUrl": "https://firmasundhed.nu/media/1065/favicon-firmasundhed-dk.ico?anchor=center&mode=crop&width=192&height=192&rnd=132133692890000000",
+    "logoDataUri": "data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAolBMVEX////N5OoDeZZor8DJ4+mFv838/f7x+PrZ6++/3eRcqbtInrP2+vvj8fTg7/PE3+bB3uWw1d6RxdJpsMEfiKIahaDs9ffQ5uvG4ed1tcVfqr1UpLhOobX5/P3n8vXV6e7O5eq32eG02OCiztiYyNR9usltssJjrL5MoLVDm7E/mrA7l642lawmjKUQgJzt9vjd7fGq0tybytWBvMtvssMukKjmKmPfAAAAwklEQVQY0y2NV5bCMBAEWyPJsiRsjHOChSXHDcD9r8aIR/3VvO5pBL60r0q3MfigS7p1PdFzhYBxdC2/gW1VUg5mcqbqBCC+VdQF58qV9Lwe6TwD8+cS/ORytpastTLQl3EVglFoZXaBXe9O/PK9nolpip0reh8HT6wQ019sB1kcNPtcKT4kWPtC7ocEWGRLIVqDdNxL6XkhbsWybQBsjoU8/AMNN7IaQNQd5ZAjEkrZFIHJ3V80ImV584N9cKKJDZgX8IEMufxLRU0AAAAASUVORK5CYII=",
+    "logoIsFallback": false,
+    "colors": [
+      "#51a3b7",
+      "#cae4ea",
+      "#1f88a3"
+    ],
+    "metaDescription": "Resultaterne var overraskende for flere af medarbejderne i AMETEK, da vi i Firmasundhed Danmark udfordrede dem i deres fysiske sundhed.\n\nFor nogen blev det til en solid øjenåbner."
+  },
+  "createdAt": "2026-07-21T09:41:32.812Z",
+  "updatedAt": "2026-07-21T09:41:32.812Z"
+}

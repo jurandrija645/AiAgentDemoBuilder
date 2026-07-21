@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type CSSProperties } from "react";
 import type { LeadData } from "@/lib/leads";
-import { hexToRgba, readableTextColor } from "@/lib/color";
+import { readableTextColor } from "@/lib/color";
 import { t } from "@/lib/i18n";
 import { panelStyle, panelHeaderStyle } from "@/lib/surface";
+import { tokens, onTheme, type Theme } from "@/lib/theme";
 import AgentAvatar from "./AgentAvatar";
 
 interface ChatMessage {
@@ -12,15 +13,18 @@ interface ChatMessage {
   content: string;
 }
 
-export default function ChatWidget({ lead }: { lead: LeadData }) {
+export default function ChatWidget({ lead, theme }: { lead: LeadData; theme?: Theme }) {
   const s = t(lead.locale);
+  const tk = tokens(theme);
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: "assistant", content: s.chatGreeting(lead.businessName) },
   ]);
   const [input, setInput] = useState("");
   const [status, setStatus] = useState<"idle" | "starting" | "sending">("idle");
   const listRef = useRef<HTMLDivElement>(null);
-  const [primary = "#334155", accent = primary] = lead.branding.colors;
+  const [rawPrimary = "#334155", rawAccent = rawPrimary] = lead.branding.colors;
+  const primary = onTheme(rawPrimary, theme);
+  const accent = onTheme(rawAccent, theme);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
@@ -64,11 +68,11 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
   return (
     <div
       className="flex h-[480px] w-full flex-col overflow-hidden rounded-2xl border backdrop-blur-xl"
-      style={panelStyle(primary)}
+      style={panelStyle(primary, theme)}
     >
-      <div className="flex items-center gap-2.5 border-b px-4 py-3" style={panelHeaderStyle()}>
-        <AgentAvatar kind="chat" primary={primary} accent={accent} online />
-        <span className="text-sm font-medium text-white/80">
+      <div className="flex items-center gap-2.5 border-b px-4 py-3" style={panelHeaderStyle(theme)}>
+        <AgentAvatar kind="chat" primary={primary} accent={accent} online theme={theme} />
+        <span className="text-sm font-medium" style={{ color: tk.textPrimary }}>
           {s.chatTitle(lead.businessName)}
         </span>
       </div>
@@ -80,7 +84,7 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
             className={`flex items-end gap-2 ${m.role === "user" ? "justify-end" : "justify-start"}`}
           >
             {m.role === "assistant" && (
-              <AgentAvatar kind="chat" primary={primary} accent={accent} size="sm" />
+              <AgentAvatar kind="chat" primary={primary} accent={accent} size="sm" theme={theme} />
             )}
             <div
               className="max-w-[85%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed"
@@ -90,7 +94,7 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
                       backgroundImage: `linear-gradient(135deg, ${primary}, ${accent})`,
                       color: readableTextColor(primary),
                     }
-                  : { background: hexToRgba("#ffffff", 0.06), color: "#e5e5ea" }
+                  : { background: tk.bubbleBg, color: tk.bubbleText }
               }
             >
               {m.content}
@@ -99,10 +103,10 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
         ))}
         {status !== "idle" && (
           <div className="flex items-end justify-start gap-2">
-            <AgentAvatar kind="chat" primary={primary} accent={accent} size="sm" pulse />
+            <AgentAvatar kind="chat" primary={primary} accent={accent} size="sm" pulse theme={theme} />
             <div
-              className="rounded-2xl px-3.5 py-2 text-sm text-white/50"
-              style={{ background: hexToRgba("#ffffff", 0.06) }}
+              className="rounded-2xl px-3.5 py-2 text-sm"
+              style={{ background: tk.bubbleBg, color: tk.textFaint }}
             >
               {status === "starting" ? s.chatStarting : s.chatThinking}
             </div>
@@ -112,7 +116,7 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
 
       <form
         className="flex items-center gap-2 border-t p-3"
-        style={{ borderColor: hexToRgba("#ffffff", 0.08) }}
+        style={{ borderColor: tk.divider }}
         onSubmit={(e) => {
           e.preventDefault();
           void handleSend();
@@ -122,8 +126,14 @@ export default function ChatWidget({ lead }: { lead: LeadData }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={s.chatPlaceholder}
-          className="flex-1 rounded-full border bg-transparent px-4 py-2 text-sm text-white placeholder-white/40 outline-none"
-          style={{ borderColor: hexToRgba("#ffffff", 0.15) }}
+          className="chat-input flex-1 rounded-full border bg-transparent px-4 py-2 text-sm outline-none"
+          style={
+            {
+              borderColor: tk.inputBorder,
+              color: tk.inputText,
+              "--placeholder": tk.placeholder,
+            } as CSSProperties
+          }
         />
         <button
           type="submit"
