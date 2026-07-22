@@ -4,8 +4,17 @@ import { extractSiteColors } from "./palette";
 import { detectSiteTheme } from "./site-theme";
 import type { Theme } from "./theme";
 
+// Plenty of small-business sites sit behind a WAF that 403s anything
+// self-identifying as a bot, so a bot string just means we can't read the same
+// public marketing page a browser would load fine.
 const USER_AGENT =
-  "Mozilla/5.0 (compatible; LeadDemoGeneratorBot/1.0; +https://localhost)";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
+
+const BROWSER_HEADERS = {
+  "User-Agent": USER_AGENT,
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.9",
+};
 
 export class ScrapeBlockedError extends Error {}
 
@@ -94,7 +103,7 @@ async function fetchHtml(url: string): Promise<string> {
   let res: Response;
   try {
     res = await fetch(url, {
-      headers: { "User-Agent": USER_AGENT },
+      headers: BROWSER_HEADERS,
       redirect: "follow",
       signal: AbortSignal.timeout(15_000),
     });

@@ -1,0 +1,21 @@
+{
+  "slug": "meyer-sons-mechanical",
+  "businessName": "Meyer & Sons Mechanical",
+  "sourceUrl": "https://www.meyerandsonstx.net/",
+  "mode": "mockup",
+  "locale": "en",
+  "theme": "light",
+  "branding": {
+    "logoUrl": "https://irp.cdn-website.com/6f469bd9/site_favicon_16_1775501792509.ico",
+    "logoDataUri": null,
+    "logoIsFallback": true,
+    "colors": [
+      "#d15530",
+      "#334155",
+      "#64748b"
+    ],
+    "metaDescription": "Get reliable HVAC installation, repair, & maintenance. Trust Meyer & Sons Mechanical for comfort in your home or business. Contact us today!"
+  },
+  "createdAt": "2026-07-22T07:32:59.143Z",
+  "updatedAt": "2026-07-22T07:32:59.143Z"
+}

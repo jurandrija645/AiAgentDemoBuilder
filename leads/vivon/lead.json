@@ -4,17 +4,18 @@
   "sourceUrl": "https://vivon.es",
   "mode": "mockup",
   "locale": "es",
+  "theme": "light",
   "branding": {
     "logoUrl": "https://www.vivon.es/wp-content/uploads/2025/02/vivon-icono.svg",
     "logoDataUri": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyNS4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgdmlld0JveD0iMCAwIDkyIDkyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA5MiA5MjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4NCgkuc3Qwe2ZpbGw6IzAyMDIwMzt9DQoJLnN0MXtmaWxsOiMyOTgyQzU7fQ0KPC9zdHlsZT4NCjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik00Ni4zLDI3Yy0xLjItMC45LTIuNS0xLjQtNC0xLjRjLTEsMC0xLjksMC4yLTIuNywwLjdjLTAuOCwwLjUtMS40LDEuMi0xLjksMi4ybC0xMiwyNi4xTDEzLjcsMjguNg0KCWMtMC40LTEtMS4xLTEuNy0xLjktMi4yYy0wLjgtMC41LTEuNy0wLjctMi43LTAuN2MtMS41LDAtMi45LDAuNS00LjEsMS40Yy0xLjIsMS0xLjgsMi4xLTEuOCwzLjVjMCwwLjgsMC4yLDEuNSwwLjUsMi4xbDE2LjIsMzMuMw0KCWMwLjUsMS4xLDEuMywxLjksMi40LDIuNWMxLjEsMC42LDIuMiwwLjksMy40LDAuOWMxLjIsMCwyLjQtMC4zLDMuNC0wLjljMS4xLTAuNiwxLjktMS40LDIuNC0yLjVsMTYuMi0zMy4zDQoJYzAuNC0wLjcsMC42LTEuNCwwLjYtMi4xQzQ4LjEsMjkuMiw0Ny41LDI4LDQ2LjMsMjd6Ii8+DQo8cGF0aCBjbGFzcz0ic3QxIiBkPSJNODAuNCwyOC44bDItNC42YzAuNS0xLjEsMC41LTIuMSwwLTNjLTAuNS0wLjktMS4zLTEuNy0yLjYtMi4yYy0xLjItMC41LTIuMy0wLjYtMy4zLTAuM2MtMSwwLjMtMS43LDEtMi4yLDIuMQ0KCWwtMi4yLDVjLTEuNC0wLjItMi45LTAuMy00LjQtMC4zYy00LjQsMC04LjIsMC45LTExLjUsMi43Yy0zLjIsMS44LTUuNyw0LjQtNy41LDcuN2MtMS44LDMuMy0yLjYsNy4yLTIuNiwxMS43DQoJYzAsNC41LDAuOSw4LjQsMi42LDExLjdjMS44LDMuMyw0LjMsNS45LDcuNSw3LjdjMy4yLDEuOCw3LjEsMi43LDExLjUsMi43YzQuNCwwLDguMi0wLjksMTEuNC0yLjdjMy4yLTEuOCw1LjctNC40LDcuNS03LjcNCgljMS44LTMuMywyLjYtNy4yLDIuNi0xMS43YzAtNC41LTAuOS04LjQtMi42LTExLjdDODUuMiwzMi45LDgzLjEsMzAuNSw4MC40LDI4Ljh6IE03NS40LDU3LjVDNzMuNSw1OS44LDcxLDYxLDY3LjcsNjENCgljLTMuMywwLTUuOC0xLjEtNy42LTMuNGMtMS44LTIuMy0yLjgtNS42LTIuOC0xMC4xYzAtNC40LDAuOS03LjgsMi44LTEwLjFjMS44LTIuMyw0LjQtMy40LDcuNi0zLjRjMC4zLDAsMC41LDAsMC44LDBsLTMuMiw3LjMNCgljLTAuNSwxLjEtMC41LDIuMSwwLDNjMC40LDAuOSwxLjMsMS43LDIuNSwyLjJjMS4zLDAuNSwyLjQsMC43LDMuNCwwLjNjMS0wLjMsMS43LTEsMi4yLTIuMWwyLjctNi4yYzEuMywyLjIsMiw1LjEsMiw4LjgNCglDNzguMSw1MS45LDc3LjIsNTUuMiw3NS40LDU3LjV6Ii8+DQo8L3N2Zz4NCg==",
     "logoIsFallback": false,
     "colors": [
       "#1863dc",
-      "#003388",
-      "#00bcd4"
+      "#00bcd4",
+      "#293c5b"
     ],
     "metaDescription": "Optimiza al máximo tu inversión en la mejora energética de tu vivienda con una gestión integral y eficiente, liderada por un equipo de arquitectos e ingenieros."
   },
-  "createdAt": "2026-07-21T08:33:48.609Z",
-  "updatedAt": "2026-07-21T08:33:48.609Z"
+  "createdAt": "2026-07-21T14:27:11.236Z",
+  "updatedAt": "2026-07-21T14:27:11.236Z"
 }
